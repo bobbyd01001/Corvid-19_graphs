@@ -1,0 +1,164 @@
+# import modules
+import pandas as pd
+import wget
+import numpy as np
+import os
+import matplotlib.pyplot as plt
+
+
+# stored variables
+corvid_data = 'covid_19_data.csv'
+file_exist = os.path.exists(corvid_data)
+url = 'https://opendata.ecdc.europa.eu/covid19/casedistribution/csv'
+coronavirus_19_data = pd.read_csv(corvid_data)
+# display maximum rows in data frame
+pd.set_option('display.max_rows', None)
+# create data frame
+df1 = pd.DataFrame(coronavirus_19_data, columns=['day', 'month',
+                                                 'cases', 'deaths',
+                                                 'countriesAndTerritories',
+                                                 'continentExp'])
+
+
+def top_corona_virus():
+    """function that creates bar graph of Corvid
+    Cases, Recoveries and Deaths"""
+    # creates variable ax1 for grid subplot
+    fig, ax1 = plt.subplots()
+    # prints the selected grouped data to terminal
+    print(df1.groupby('countriesAndTerritories')['cases'].sum().sort_values().tail(top_number))
+    # creates bar graph of total Confirmed cases by country
+    df1.groupby('countriesAndTerritories')['cases'].sum().sort_values().tail(top_number).plot(ax=ax1, kind='barh',
+        title='Top {0} Countries with Confirmed Covid-19 Cases'.format(top_number))
+    # creates title for bar graph
+    plt.xlabel('Number of Confirmed Cases')
+    # places grid on axis below bar graph
+    ax1.set_axisbelow(True)
+    # creates actual subplot grid
+    ax1.grid()
+    # create and display completed graph
+    plt.show()
+
+    # prints the selected grouped data to terminal
+    print(df1.groupby('countriesAndTerritories')['deaths'].sum().sort_values().tail(top_number))
+    # creates variable ax2 for grid subplot
+    fig2, ax2 = plt.subplots()
+    # creates bar graph of total Recovered cases by country
+    df1.groupby('countriesAndTerritories')['deaths'].sum().sort_values().tail(top_number).plot(ax=ax2, kind='barh',
+        title='Top {0} Countries with Covid-19 Deaths'.format(top_number))
+    # creates title for bar graph
+    plt.xlabel('Number of Confirmed Deaths')
+    # places grid on axis below bar graph
+    ax2.set_axisbelow(True)
+    # creates actual subplot grid
+    ax2.grid()
+    # create and display completed graph
+    plt.show()
+
+    # prints the selected grouped data to terminal
+    print(df1.groupby('month')['cases'].sum().sort_values().tail(top_number))
+    # creates variable ax3 for grid subplot
+    fig3, ax3 = plt.subplots()
+    # creates bar graph of total Deaths cases by country
+    df1.groupby('month')['cases'].sum().sort_values().tail(top_number).plot(ax=ax3, kind='barh',
+        title='Total Global Cases Per Month')
+    # creates title for bar graph
+    plt.xlabel('Number of Cases Per Month')
+    # places grid on axis below bar graph
+    ax3.set_axisbelow(True)
+    # creates actual subplot grid
+    ax3.grid()
+    # create and display completed graph
+    plt.show()
+
+    # prints the selected grouped data to terminal
+    print(df1.groupby('month')['deaths'].sum().sort_values().tail(top_number))
+    # creates variable ax3 for grid subplot
+    fig4, ax4 = plt.subplots()
+    # creates bar graph of total Deaths cases by country
+    df1.groupby('month')['deaths'].sum().sort_values().tail(top_number).plot(ax=ax4, kind='barh',
+        title='Total Globals Deaths Per Month')
+    # creates title for bar graph
+    plt.xlabel('Number of Deaths Per Month')
+    # places grid on axis below bar graph
+    ax4.set_axisbelow(True)
+    # creates actual subplot grid
+    ax4.grid()
+    # create and display completed graph
+    plt.show()
+
+    # prints the selected grouped data to terminal
+    print(df1.groupby('continentExp')['cases'].sum().sort_values().tail(top_number))
+    # creates variable ax3 for grid subplot
+    fig5, ax5 = plt.subplots()
+    # creates bar graph of total Deaths cases by country
+    df1.groupby('continentExp')['cases'].sum().sort_values().tail(top_number).plot(ax=ax5, kind='barh',
+                                                                             title='Total Globals Cases Per Continent')
+    # creates title for bar graph
+    plt.xlabel('Number of Cases Per Continent')
+    # places grid on axis below bar graph
+    ax5.set_axisbelow(True)
+    # creates actual subplot grid
+    ax5.grid()
+    # create and display completed graph
+    plt.show()
+
+    # prints the selected grouped data to terminal
+    print(df1.groupby('continentExp')['deaths'].sum().sort_values().tail(top_number))
+    # creates variable ax3 for grid subplot
+    fig6, ax6 = plt.subplots()
+    # creates bar graph of total Deaths cases by country
+    df1.groupby('continentExp')['deaths'].sum().sort_values().tail(top_number).plot(ax=ax6, kind='barh',
+                                                                             title='Total Globals Deaths Per Continent')
+    # creates title for bar graph
+    plt.xlabel('Number of Deaths Per Continent')
+    # places grid on axis below bar graph
+    ax6.set_axisbelow(True)
+    # creates actual subplot grid
+    ax6.grid()
+    # create and display completed graph
+    plt.show()
+
+
+def global_cases():
+    """function that creates bar graph of Corvid
+        Cases, Recoveries and Deaths"""
+    pd.set_option('display.max_rows', None)
+    confirm_data = df1['cases'].sum()
+    death_data = df1['deaths'].sum()
+    objects = ['cases', 'deaths']
+    performance = [confirm_data, death_data]
+    y_pos = np.arange(len(objects))
+    fig4, ax4 = plt.subplots()
+    plt.bar(y_pos, performance, color=['C8', 'C2'])
+    plt.xticks(y_pos, objects)
+    plt.ylabel('Number of People Worldwide')
+    plt.title('Global Corvid-19 Statistics')
+    ax4.set_axisbelow(True)
+    ax4.grid()
+    plt.show()
+
+
+if file_exist:
+    print('The file exist')
+    new_data = input('Do you want to download the most current covid-19 data? ' + 'yes or no: ')
+    if new_data == 'yes':
+        print('I will remove the old Corvid-19 data file first')
+        os.remove(corvid_data)
+        print('Downloading the most current data ')
+        wget.download(url, corvid_data)
+    elif new_data == 'no':
+        print('update not needed.')
+else:
+    print('File does not exist')
+    print('I need to retrieve the file for you')
+    wget.download(url, corvid_data)
+    print('Downloading the most current data...')
+
+
+print(df1.groupby('countriesAndTerritories').sum())
+top_number = int(input('What number of Countries do you want to check? '))
+top_corona_virus()
+global_cases()
+
+
